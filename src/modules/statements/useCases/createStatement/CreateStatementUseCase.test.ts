@@ -46,6 +46,49 @@ describe("Create Statement", () => {
     expect(withdraw.amount).toBe(500);
   });
 
+  it("should be able to transfer if sender or receiver is set", async () => {
+    const { id: sender_id } = await usersRepository.create({
+      email: "user1@test.com",
+      name: "User 1",
+      password: "123456",
+    });
+
+    const { id: receiver_id } = await usersRepository.create({
+      email: "user2@test.com",
+      name: "User 2",
+      password: "123456",
+    });
+
+    await createStatementUseCase.execute({
+      user_id: sender_id,
+      amount: 1500,
+      description: "Deposit",
+      type: OperationType.DEPOSIT,
+    });
+
+    const transferFrom = await createStatementUseCase.execute({
+      user_id: sender_id,
+      receiver_id,
+      amount: 1000,
+      description: "Transfer",
+      type: OperationType.WITHDRAW,
+    });
+
+    const transferTo = await createStatementUseCase.execute({
+      user_id: receiver_id,
+      sender_id,
+      amount: 1000,
+      description: "Transfer",
+      type: OperationType.DEPOSIT,
+    });
+
+    expect(transferFrom.type).toBe("transfer");
+    expect(transferFrom.amount).toBe(1000);
+
+    expect(transferTo.type).toBe("transfer");
+    expect(transferTo.amount).toBe(1000);
+  });
+
   it("should be able to withdraw all the balance", async () => {
     const { id: user_id } = await usersRepository.create({
       email: "user@test.com",

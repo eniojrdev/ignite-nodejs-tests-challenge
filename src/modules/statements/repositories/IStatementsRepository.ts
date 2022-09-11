@@ -1,10 +1,10 @@
 import { Statement } from "../entities/Statement";
-import { ICreateStatementDTO } from "../useCases/createStatement/ICreateStatementDTO";
+import { ICreateStatementRepository } from "../useCases/createStatement/ICreateStatementDTO";
 import { IGetBalanceDTO } from "../useCases/getBalance/IGetBalanceDTO";
 import { IGetStatementOperationDTO } from "../useCases/getStatementOperation/IGetStatementOperationDTO";
 
 export interface IStatementsRepository {
-  create: (data: ICreateStatementDTO) => Promise<Statement>;
+  create: (data: ICreateStatementRepository) => Promise<Statement>;
   findStatementOperation: (
     data: IGetStatementOperationDTO
   ) => Promise<Statement | undefined>;
